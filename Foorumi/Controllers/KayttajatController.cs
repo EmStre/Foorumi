@@ -1,5 +1,4 @@
-﻿using Foorumi.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -9,51 +8,51 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Foorumi.Models;
 
 namespace Foorumi.Controllers
 {
-    public class AlueetController : ApiController
+    public class KayttajatController : ApiController
     {
         private FoorumiModel db = new FoorumiModel();
 
-        // GET: api/Alueet
-        public IQueryable<Alue> GetAlueet()
+
+
+
+        // GET: api/Kayttajat
+        public IQueryable<Kayttaja> GetKayttajat()
         {
-            return db.Alueet;
+            return db.Kayttajat;
         }
 
-        // GET: api/Alueet/5
-        [ResponseType(typeof(Lanka))]
-        public IHttpActionResult GetAlue(int id)
+        // GET: api/Kayttajat/5
+        [ResponseType(typeof(Kayttaja))]
+        public IHttpActionResult GetKayttaja(int id)
         {
-            Alue alue = db.Alueet.Find(id);
-            if (alue == null)
+            Kayttaja kayttaja = db.Kayttajat.Find(id);
+            if (kayttaja == null)
             {
                 return NotFound();
             }
 
-            return Ok(new
-            {
-                alue,
-                langat = alue.Langat
-            });
+            return Ok(kayttaja);
         }
 
-        // PUT: api/Alueet/5
+        // PUT: api/Kayttajat/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutAlue(int id, Alue alue)
+        public IHttpActionResult PutKayttaja(int id, Kayttaja kayttaja)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != alue.alue_id)
+            if (id != kayttaja.kayttaja_id)
             {
                 return BadRequest();
             }
 
-            db.Entry(alue).State = EntityState.Modified;
+            db.Entry(kayttaja).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +60,7 @@ namespace Foorumi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AlueExists(id))
+                if (!KayttajaExists(id))
                 {
                     return NotFound();
                 }
@@ -74,35 +73,35 @@ namespace Foorumi.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Alueet
-        [ResponseType(typeof(Alue))]
-        public IHttpActionResult PostAlue(Alue alue)
+        // POST: api/Kayttajat
+        [ResponseType(typeof(Kayttaja))]
+        public IHttpActionResult PostKayttaja(Kayttaja kayttaja)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Alueet.Add(alue);
+            db.Kayttajat.Add(kayttaja);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = alue.alue_id }, alue);
+            return CreatedAtRoute("DefaultApi", new { id = kayttaja.kayttaja_id }, kayttaja);
         }
 
-        // DELETE: api/Alueet/5
-        [ResponseType(typeof(Alue))]
-        public IHttpActionResult DeleteAlue(int id)
+        // DELETE: api/Kayttajat/5
+        [ResponseType(typeof(Kayttaja))]
+        public IHttpActionResult DeleteKayttaja(int id)
         {
-            Alue alue = db.Alueet.Find(id);
-            if (alue == null)
+            Kayttaja kayttaja = db.Kayttajat.Find(id);
+            if (kayttaja == null)
             {
                 return NotFound();
             }
 
-            db.Alueet.Remove(alue);
+            db.Kayttajat.Remove(kayttaja);
             db.SaveChanges();
 
-            return Ok(alue);
+            return Ok(kayttaja);
         }
 
         protected override void Dispose(bool disposing)
@@ -114,9 +113,9 @@ namespace Foorumi.Controllers
             base.Dispose(disposing);
         }
 
-        private bool AlueExists(int id)
+        private bool KayttajaExists(int id)
         {
-            return db.Alueet.Count(e => e.alue_id == id) > 0;
+            return db.Kayttajat.Count(e => e.kayttaja_id == id) > 0;
         }
     }
 }
