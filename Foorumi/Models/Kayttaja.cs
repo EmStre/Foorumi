@@ -57,6 +57,9 @@ namespace Foorumi.Models
         public virtual Kayttajataso Kayttajatasot { get; set; }
 
         [IgnoreDataMember]
+        public string Sessio { get; set; }
+
+        [IgnoreDataMember]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Lanka> Langat { get; set; }
 

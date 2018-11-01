@@ -12,16 +12,90 @@ namespace Foorumi.Models
     public static class Kirjautuminen
     {
         public const int OletusKayttajataso = 2;
+        public const int VierasKayttajaTaso = 3;
         private const int Vanhenemisaika = 20;
         private const string salausAvain = "5KmoimitäkuuluuMKktvkXVt1JV1hAtA3XFzQFqpH3yH3bUcNkHUex6WxREeSqMfq6tn/OCYAej4MFGPTVLtSLJ6NhLWN/NFfcBccED31cu5RgqR"; // SALAINEN salausavain!!!!
         private const string issuer = "Foorumi";
         private const string audience = "Foorumi";
 
-        public static int ValidoiJwt(string tokenString)
+        public static string GeneroiSessioAvain()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+        public static bool HaeKirjautuminen(string token, out Kayttaja kayttaja)
+        {
+            kayttaja = new Kayttaja() { kayttajataso_id = VierasKayttajaTaso }; // Alustetaan käyttäjä vieraana
+
+
+            if (token == null) // Ei tokenia, ei kirjautumista
+            {
+                return false;
+            }
+
+            if (!ValidoiJwt(token)) // Epäkelpo tokeni ei käy
+            {
+                return false;
+            }
+
+            Dictionary<string, string> payload = JwtHaePayload(token, true);
+
+            string sessioAvain;
+
+            try
+            {
+                sessioAvain = payload["ses"];
+            }
+            catch (NullReferenceException)
+            {
+                return false;
+            }
+
+            FoorumiModel db = new FoorumiModel();
+
+            var sessiollaHaku = db.Kayttajat.Where(k => k.Sessio == sessioAvain); // Etsitään sessioavaimella käyttäjää
+
+            if (sessiollaHaku.Count() != 1) // Jos lkm muu kuin 1 niin ei käy
+            {
+                return false;
+            }
+
+            kayttaja = sessiollaHaku.Single(); // Liitetään käyttäjä
+
+            kayttaja.aktiivisuus = DateTime.Now; // Päivitetään aktiivisuus
+            kayttaja.jwt = GeneroiJwtString(kayttaja.Sessio); // Generoidaan uusi token
+
+            db.SaveChanges();
+
+            return true;
+        }
+
+        public static Dictionary<string, string> JwtHaePayload(string token, bool ohitaValidointi = false)
+        {
+            if (!ohitaValidointi && !ValidoiJwt(token))
+            {
+                return null;
+            }
+
+            Dictionary<string, string> palautus = new Dictionary<string, string>();
+
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwt = handler.ReadJwtToken(token);
+
+            foreach (var claim in jwt.Claims)
+            {
+                palautus.Add(claim.Type, claim.Value);
+            }
+
+            return palautus;
+
+        }
+
+        public static bool ValidoiJwt(string tokenString)
         {
             if (tokenString == null)
             {
-                return -1;
+                return false;
             }
 
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
@@ -47,16 +121,18 @@ namespace Foorumi.Models
             }
             catch (Exception)
             {
-                return -1;
+                return false;
             }
 
-            JwtSecurityToken jwt = handler.ReadToken(tokenString) as JwtSecurityToken;
-            return int.Parse(jwt.Claims.First(c => c.Type == "kayttaja_id").Value);
+            return true;
+
+            //JwtSecurityToken jwt = handler.ReadToken(tokenString) as JwtSecurityToken;
+            //return (jwt.Claims.First(c => c.Type == "kayttaja_id").Value);
 
         }
 
 
-        public static string GeneroiJwtString(int kayttaja_id)
+        public static string GeneroiJwtString(string sessioTunniste)
         {
             //JwtPayload payload = new JwtPayload {
             //    { "kid", kayttaja_id.ToString() },
@@ -65,7 +141,7 @@ namespace Foorumi.Models
             //     }
             // };
 
-            JwtPayload payload = new JwtPayload(issuer, audience, null, null, DateTime.Now.AddMinutes(Vanhenemisaika)) { { "kayttaja_id", kayttaja_id} };
+            JwtPayload payload = new JwtPayload(issuer, audience, null, null, DateTime.Now.AddMinutes(Vanhenemisaika)) { { "ses", sessioTunniste } };
 
             JwtSecurityToken token = GeneroiJwtToken(payload);
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();

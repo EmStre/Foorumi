@@ -41,7 +41,10 @@ namespace Foorumi.Controllers
                 return NotFound();
             }
 
-            string jwt = Kirjautuminen.GeneroiJwtString(kayttaja.kayttaja_id);
+            kayttaja.Sessio = Kirjautuminen.GeneroiSessioAvain(); // Generoidaan uusi sessioavain
+            db.SaveChanges(); // tallennetaan muutos
+
+            string jwt = Kirjautuminen.GeneroiJwtString(kayttaja.Sessio);
 
 
 

@@ -19,10 +19,9 @@ namespace Foorumi.Controllers
         public IHttpActionResult GetAlueet()
         {
             string jwt = Request.Headers.Authorization?.ToString().Substring(7);
-            int kayttajaId = Kirjautuminen.ValidoiJwt(jwt);
-            if (kayttajaId  != -1)
+            if (!Kirjautuminen.ValidoiJwt(jwt))
             {
-                return Ok(kayttajaId);
+                return Ok(jwt);
             } else
             {
                 return Unauthorized();

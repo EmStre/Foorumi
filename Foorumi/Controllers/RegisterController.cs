@@ -53,7 +53,8 @@ namespace Foorumi.Controllers
                 nimimerkki = nimi,
                 email = email,
                 hash = Kirjautuminen.GeneroiHash(pwd),
-                kayttajataso_id = Kirjautuminen.OletusKayttajataso
+                kayttajataso_id = Kirjautuminen.OletusKayttajataso,
+                aktiivisuus = DateTime.Now
             };
 
             db.Kayttajat.Add(kayttaja);
