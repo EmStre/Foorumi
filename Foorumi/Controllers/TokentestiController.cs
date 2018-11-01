@@ -19,7 +19,7 @@ namespace Foorumi.Controllers
         public IHttpActionResult GetAlueet()
         {
             string jwt = Request.Headers.Authorization?.ToString().Substring(7);
-            if (!Kirjautuminen.ValidoiJwt(jwt))
+            if (Kirjautuminen.ValidoiJwt(jwt))
             {
                 return Ok(jwt);
             } else

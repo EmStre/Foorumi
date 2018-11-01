@@ -37,6 +37,21 @@ namespace Foorumi.Models
         public bool o_aluePoista { get; set; } = false;
 
         [IgnoreDataMember]
+        public bool o_lankaLisaa { get; set; } = false;
+
+        [IgnoreDataMember]
+        public bool o_lankaMuokkaa { get; set; } = false;
+
+        [IgnoreDataMember]
+        public bool o_lankaPoista { get; set; } = false;
+
+        [IgnoreDataMember]
+        public bool o_lankaOmaMuokkaa { get; set; } = false;
+
+        [IgnoreDataMember]
+        public bool o_lankaOmaPoista { get; set; } = false;
+
+        [IgnoreDataMember]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Kayttaja> Kayttajat { get; set; }
 

@@ -205,6 +205,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KayttajatasotController.cs" />
     <Compile Include="Controllers\KayttajatController.cs" />
+    <Compile Include="Controllers\LangatController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\TokentestiController.cs" />
