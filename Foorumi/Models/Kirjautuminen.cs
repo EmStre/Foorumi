@@ -16,6 +16,21 @@ namespace Foorumi.Models
         private const int Vanhenemisaika = 20;
         private const string salausAvain = "5KmoimitäkuuluuMKktvkXVt1JV1hAtA3XFzQFqpH3yH3bUcNkHUex6WxREeSqMfq6tn/OCYAej4MFGPTVLtSLJ6NhLWN/NFfcBccED31cu5RgqR"; // SALAINEN salausavain!!!!
         private const string issuer = "Foorumi";
+
+        public static List<Alue> HaeKayttajanAlueet(Kayttaja k)
+        {
+            List<Alue> alueet = new List<Alue>();
+            FoorumiModel db = new FoorumiModel();
+            foreach(Alue a in db.Alueet)
+            {
+                if (a.NakeekoKayttaja(k))
+                {
+                    alueet.Add(a);
+                }
+            }
+            return alueet;
+        }
+
         private const string audience = "Foorumi";
 
         public static string GeneroiSessioAvain()
@@ -46,7 +61,7 @@ namespace Foorumi.Models
             {
                 sessioAvain = payload["ses"];
             }
-            catch (NullReferenceException)
+            catch (Exception)
             {
                 return kayttaja;
             }
