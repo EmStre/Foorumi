@@ -17,10 +17,10 @@ namespace Foorumi.Controllers
         private FoorumiModel db = new FoorumiModel();
 
         // GET: api/Alueet
-        public IQueryable<Alue> GetAlueet()
+        public IHttpActionResult GetAlueet()
         {
             Kayttaja k = Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null);
-            return db.Alueet.Where(a => a.NakeekoKayttaja(k));
+            return Ok(Kirjautuminen.HaeKayttajanAlueet(k));
         }
 
         // GET: api/Alueet/5
