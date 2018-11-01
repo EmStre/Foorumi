@@ -23,19 +23,19 @@ namespace Foorumi.Models
             return Guid.NewGuid().ToString();
         }
 
-        public static bool HaeKirjautuminen(string token, out Kayttaja kayttaja)
+        public static Kayttaja HaeKirjautuminen(string token = null)
         {
-            kayttaja = new Kayttaja() { kayttajataso_id = VierasKayttajaTaso }; // Alustetaan käyttäjä vieraana
+            Kayttaja kayttaja = new Kayttaja() { nimimerkki = "Vieras", kayttajataso_id = VierasKayttajaTaso }; // Alustetaan käyttäjä vieraana
 
 
             if (token == null) // Ei tokenia, ei kirjautumista
             {
-                return false;
+                return kayttaja;
             }
 
             if (!ValidoiJwt(token)) // Epäkelpo tokeni ei käy
             {
-                return false;
+                return kayttaja;
             }
 
             Dictionary<string, string> payload = JwtHaePayload(token, true);
@@ -48,7 +48,7 @@ namespace Foorumi.Models
             }
             catch (NullReferenceException)
             {
-                return false;
+                return kayttaja;
             }
 
             FoorumiModel db = new FoorumiModel();
@@ -57,7 +57,7 @@ namespace Foorumi.Models
 
             if (sessiollaHaku.Count() != 1) // Jos lkm muu kuin 1 niin ei käy
             {
-                return false;
+                return kayttaja;
             }
 
             kayttaja = sessiollaHaku.Single(); // Liitetään käyttäjä
@@ -67,7 +67,7 @@ namespace Foorumi.Models
 
             db.SaveChanges();
 
-            return true;
+            return kayttaja;
         }
 
         public static Dictionary<string, string> JwtHaePayload(string token, bool ohitaValidointi = false)
