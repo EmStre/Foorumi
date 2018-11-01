@@ -32,8 +32,8 @@ namespace Foorumi.Controllers
             {
                 return Unauthorized();
             }
-
-            return Ok(lanka.Viestit);
+            var data = new { lanka, viestit = lanka.Viestit };
+            return Ok(new { k.jwt, data });
         }
 
         // PUT: api/Lanka/5
@@ -109,7 +109,7 @@ namespace Foorumi.Controllers
                 return InternalServerError();
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(k.jwt);
         }
 
         // POST: api/Lanka
@@ -118,7 +118,7 @@ namespace Foorumi.Controllers
         {
             Kayttaja k = Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null);
 
-            lanka.Kayttajat = k;
+            lanka.kayttaja_id = k.kayttaja_id;
             lanka.aika = DateTime.Now;
             Alue alue = db.Alueet.Find(lanka.alue_id);
 
@@ -154,7 +154,7 @@ namespace Foorumi.Controllers
             db.Langat.Add(lanka);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = lanka.lanka_id }, lanka);
+            return CreatedAtRoute("DefaultApi", new { k.jwt, id = lanka.lanka_id }, lanka);
         }
 
         // DELETE: api/Lanka/5
@@ -164,7 +164,9 @@ namespace Foorumi.Controllers
             Kayttaja k = Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null);
 
             if (!k.OnKirjautunut)
+            {
                 return Unauthorized();
+            }
 
             Lanka lanka = db.Langat.Find(id);
             if (lanka == null)
@@ -172,7 +174,7 @@ namespace Foorumi.Controllers
                 return NotFound();
             }
 
-            if(lanka.Kayttajat.kayttaja_id == k.kayttaja_id)
+            if (lanka.Kayttajat.kayttaja_id == k.kayttaja_id)
             {
                 // Tämä on oma lanka
                 if (!k.Kayttajatasot.o_lankaOmaPoista)
@@ -192,7 +194,7 @@ namespace Foorumi.Controllers
             db.Langat.Remove(lanka);
             db.SaveChanges();
 
-            return Ok(lanka);
+            return Ok(k.jwt);
         }
 
         protected override void Dispose(bool disposing)

@@ -40,7 +40,10 @@ namespace Foorumi.Models
 
         public static Kayttaja HaeKirjautuminen(string token = null)
         {
-            Kayttaja kayttaja = new Kayttaja() { nimimerkki = "Vieras", kayttajataso_id = VierasKayttajaTaso }; // Alustetaan käyttäjä vieraana
+
+            FoorumiModel db = new FoorumiModel();
+
+            Kayttaja kayttaja = new Kayttaja() { jwt = null, nimimerkki = "Vieras", kayttajataso_id = VierasKayttajaTaso, Kayttajatasot = db.Kayttajatasot.Find(VierasKayttajaTaso)}; // Alustetaan käyttäjä vieraana
 
 
             if (token == null) // Ei tokenia, ei kirjautumista
@@ -66,7 +69,6 @@ namespace Foorumi.Models
                 return kayttaja;
             }
 
-            FoorumiModel db = new FoorumiModel();
 
             var sessiollaHaku = db.Kayttajat.Where(k => k.Sessio == sessioAvain); // Etsitään sessioavaimella käyttäjää
 
@@ -78,9 +80,10 @@ namespace Foorumi.Models
             kayttaja = sessiollaHaku.Single(); // Liitetään käyttäjä
 
             kayttaja.aktiivisuus = DateTime.Now; // Päivitetään aktiivisuus
+            db.SaveChanges();
+
             kayttaja.jwt = GeneroiJwtString(kayttaja.Sessio); // Generoidaan uusi token
 
-            db.SaveChanges();
 
             return kayttaja;
         }

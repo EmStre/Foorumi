@@ -31,6 +31,10 @@ namespace Foorumi.Models
         [DataMember]
         public DateTime aika { get; set; } = DateTime.Now;
 
+
+        [DataMember]
+        public DateTime? muokattu { get; set; }
+
         [Required]
         [StringLength(50)]
         [DataMember]

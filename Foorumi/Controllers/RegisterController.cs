@@ -20,6 +20,9 @@ namespace Foorumi.Controllers
         [ResponseType(typeof(Kayttaja))]
         public IHttpActionResult PostKayttaja([FromBody]dynamic value)
         {
+            if ((Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null) as Kayttaja).OnKirjautunut)
+                return BadRequest("Rekisteröityminen ei ole sallittua kirjautuneena!");
+
             string nimi, email, pwd;
             try
             {

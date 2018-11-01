@@ -23,7 +23,7 @@ namespace Foorumi.Controllers
             if (!k.OnKirjautunut)
                 return Unauthorized();
 
-            return Ok(db.Kayttajatasot);
+            return Ok(new { k.jwt, data=db.Kayttajatasot });
         }
 
         // GET: api/Kayttajatasot/5
@@ -40,7 +40,7 @@ namespace Foorumi.Controllers
                 return NotFound();
             }
 
-            return Ok(kayttajataso);
+            return Ok(new { k.jwt, data = kayttajataso });
         }
 
         //// PUT: api/Kayttajatasot/5

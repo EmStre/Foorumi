@@ -20,7 +20,8 @@ namespace Foorumi.Controllers
         public IHttpActionResult GetAlueet()
         {
             Kayttaja k = Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null);
-            return Ok(Kirjautuminen.HaeKayttajanAlueet(k));
+            var alueet = Kirjautuminen.HaeKayttajanAlueet(k);
+            return Ok(new { k.jwt, data=alueet });
         }
 
         // GET: api/Alueet/5
@@ -38,12 +39,8 @@ namespace Foorumi.Controllers
             {
                 return Unauthorized();
             }
-
-            return Ok(new
-            {
-                alue,
-                langat = alue.Langat
-            });
+            var data = new { alue, langat = alue.Langat };
+            return Ok(new { k.jwt, data });
         }
 
         // PUT: api/Alueet/5
@@ -84,7 +81,7 @@ namespace Foorumi.Controllers
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(new { k.jwt});
         }
 
         // POST: api/Alueet
@@ -105,7 +102,7 @@ namespace Foorumi.Controllers
             db.Alueet.Add(alue);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = alue.alue_id }, alue);
+            return CreatedAtRoute("DefaultApi", new {jwt = k.jwt, id = alue.alue_id }, alue);
         }
 
         // DELETE: api/Alueet/5
@@ -127,7 +124,7 @@ namespace Foorumi.Controllers
             db.Alueet.Remove(alue);
             db.SaveChanges();
 
-            return Ok(alue);
+            return Ok(new { k.jwt});
         }
 
         protected override void Dispose(bool disposing)
