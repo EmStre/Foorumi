@@ -19,7 +19,7 @@ namespace Foorumi.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int lanka_id { get; set; }
 
-        public DateTime? aika { get; set; }
+        public DateTime? aika { get; set; } = DateTime.Now;
 
         public virtual Kayttaja Kayttajat { get; set; }
 

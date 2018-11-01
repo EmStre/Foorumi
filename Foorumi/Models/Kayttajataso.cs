@@ -28,6 +28,15 @@ namespace Foorumi.Models
         public string nimi { get; set; }
 
         [IgnoreDataMember]
+        public bool o_alueLisaa { get; set; } = false;
+
+        [IgnoreDataMember]
+        public bool o_alueMuokkaa { get; set; } = false;
+
+        [IgnoreDataMember]
+        public bool o_aluePoista { get; set; } = false;
+
+        [IgnoreDataMember]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Kayttaja> Kayttajat { get; set; }
 

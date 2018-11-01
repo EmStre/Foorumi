@@ -203,6 +203,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AlueetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\KayttajatasotController.cs" />
     <Compile Include="Controllers\KayttajatController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
@@ -212,6 +213,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Alue.cs" />
+    <Compile Include="Models\Extensionit.cs" />
     <Compile Include="Models\FoorumiModel.cs" />
     <Compile Include="Models\Kayttaja.cs" />
     <Compile Include="Models\Kayttajataso.cs" />

@@ -29,7 +29,7 @@ namespace Foorumi.Models
         public int alue_id { get; set; }
 
         [DataMember]
-        public DateTime aika { get; set; }
+        public DateTime aika { get; set; } = DateTime.Now;
 
         [Required]
         [StringLength(50)]

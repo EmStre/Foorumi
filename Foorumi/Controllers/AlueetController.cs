@@ -19,17 +19,24 @@ namespace Foorumi.Controllers
         // GET: api/Alueet
         public IQueryable<Alue> GetAlueet()
         {
-            return db.Alueet;
+            Kayttaja k = Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null);
+            return db.Alueet.Where(a => a.NakeekoKayttaja(k));
         }
 
         // GET: api/Alueet/5
         [ResponseType(typeof(Lanka))]
         public IHttpActionResult GetAlue(int id)
         {
+            Kayttaja k = Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null);
             Alue alue = db.Alueet.Find(id);
             if (alue == null)
             {
                 return NotFound();
+            }
+
+            if (!alue.NakeekoKayttaja(k))
+            {
+                return Unauthorized();
             }
 
             return Ok(new
@@ -43,6 +50,12 @@ namespace Foorumi.Controllers
         [ResponseType(typeof(void))]
         public IHttpActionResult PutAlue(int id, Alue alue)
         {
+            Kayttaja k = Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null);
+            if (!k.Kayttajatasot.o_alueMuokkaa)
+            {
+                return Unauthorized();
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -78,6 +91,12 @@ namespace Foorumi.Controllers
         [ResponseType(typeof(Alue))]
         public IHttpActionResult PostAlue(Alue alue)
         {
+            Kayttaja k = Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null);
+            if (!k.Kayttajatasot.o_alueLisaa)
+            {
+                return Unauthorized();
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -93,6 +112,12 @@ namespace Foorumi.Controllers
         [ResponseType(typeof(Alue))]
         public IHttpActionResult DeleteAlue(int id)
         {
+            Kayttaja k = Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null);
+            if (!k.Kayttajatasot.o_aluePoista)
+            {
+                return Unauthorized();
+            }
+
             Alue alue = db.Alueet.Find(id);
             if (alue == null)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Web;
@@ -9,7 +10,12 @@ namespace Foorumi.Models
     public partial class Kayttaja
     {
         [IgnoreDataMember]
+        [NotMapped]
         public string jwt { get; set; } = "";
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public bool OnKirjautunut { get => this.kayttajataso_id != Kirjautuminen.VierasKayttajaTaso;  }
     }
 
     public partial class Alue
