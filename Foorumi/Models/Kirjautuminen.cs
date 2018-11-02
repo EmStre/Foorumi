@@ -23,7 +23,7 @@ namespace Foorumi.Models
             FoorumiModel db = new FoorumiModel();
             foreach(Alue a in db.Alueet)
             {
-                if (a.NakeekoKayttaja(k))
+                if (a.NakeekoKayttaja(k) || k.kayttajataso_id == 1)
                 {
                     alueet.Add(a);
                 }

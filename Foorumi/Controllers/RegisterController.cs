@@ -41,7 +41,7 @@ namespace Foorumi.Controllers
                 return BadRequest();
             }
 
-            if (db.Kayttajat.Select(k => k.nimimerkki.ToLower() == nimi.ToLower()).Any())
+            if (db.Kayttajat.Where(k => k.nimimerkki.ToLower() == nimi.ToLower()).Any())
             {
                 // Käyttäjätunnus on jo olemassa
                 return BadRequest("Käyttäjätunnus on jo olemassa");
