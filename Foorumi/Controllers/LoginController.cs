@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Foorumi.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Foorumi.Models;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace Foorumi.Controllers
 {
@@ -18,7 +18,30 @@ namespace Foorumi.Controllers
         private FoorumiModel db = new FoorumiModel();
 
 
-        // GET: api/Login/5
+        [HttpGet]
+        public IHttpActionResult TestaaLogin()
+        {
+            Kayttaja k = Kirjautuminen.HaeKirjautuminen(Request.Headers.Authorization?.ToString().Substring(7) ?? null);
+            if (k.OnKirjautunut)
+            {
+
+                var data = new
+                {
+                    k.kayttaja_id,
+                    k.kuvaus,
+                    k.nimimerkki,
+                    k.email,
+                    k.Kayttajatasot
+                };
+
+                return Ok(new { k.jwt, data });
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+
         [HttpPost]
         public IHttpActionResult Login([FromBody]dynamic value)
         {
@@ -35,7 +58,7 @@ namespace Foorumi.Controllers
             }
 
             // Käyttäjä löytyi, tarkastetaan salasana
-            if(!Kirjautuminen.ValidoiSalasana(pwd, kayttaja.hash))
+            if (!Kirjautuminen.ValidoiSalasana(pwd, kayttaja.hash))
             {
                 // Salasana ei täsmää
                 return NotFound();
@@ -46,16 +69,16 @@ namespace Foorumi.Controllers
 
             string jwt = Kirjautuminen.GeneroiJwtString(kayttaja.Sessio);
 
-
-
-            return Ok( new {
-                jwt,
+            var data = new
+            {
                 kayttaja.kayttaja_id,
                 kayttaja.kuvaus,
                 kayttaja.nimimerkki,
                 kayttaja.email,
                 kayttaja.Kayttajatasot
-            });
+            };
+
+            return Ok(new { jwt, data });
         }
         //// POST: api/Login
         //[ResponseType(typeof(Kayttaja))]

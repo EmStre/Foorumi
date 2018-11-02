@@ -53,7 +53,7 @@ namespace Foorumi.Models
         [DataMember]
         public DateTime? aktiivisuus { get; set; } = DateTime.Now;
 
-        [DataMember]
+        [DataMember(Name = "Kayttajataso")]
         public virtual Kayttajataso Kayttajatasot { get; set; }
 
         [IgnoreDataMember]
